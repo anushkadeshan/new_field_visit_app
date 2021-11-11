@@ -2,6 +2,8 @@ class Trip {
   int id;
   String date;
   String start_meter_reading;
+  String trip_start_location;
+  String trip_end_location;
   String trip_id;
   double latitude;
   double longitude;
@@ -15,11 +17,13 @@ class Trip {
   String start_time;
 
 
-  Trip({this.id, this.start_meter_reading, this.trip_id, this.latitude, this.longitude, this.accuracy, this.altitude, this.speed, this.end_meter_reading, this.time, this.date, this.distance,this.start_time,this.end_time});
+  Trip({this.id, this.start_meter_reading, this.trip_start_location, this.trip_end_location, this.trip_id, this.latitude, this.longitude, this.accuracy, this.altitude, this.speed, this.end_meter_reading, this.time, this.date, this.distance,this.start_time,this.end_time});
 
   Trip.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     start_meter_reading = json['start_meter_reading'];
+    trip_start_location = json['trip_start_location'];
+    trip_end_location = json['trip_end_location'];
     trip_id = json['trip_id'];
     latitude = json['latitude'];
     longitude = json['longitude'];
@@ -38,6 +42,8 @@ class Trip {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['start_meter_reading'] = this.start_meter_reading;
+    data['trip_start_location'] = this.trip_start_location;
+    data['trip_end_location'] = this.trip_end_location;
     data['trip_id'] = this.trip_id;
     data['latitude'] = this.latitude;
     data['longitude'] = this.longitude;

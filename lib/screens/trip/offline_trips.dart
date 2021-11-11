@@ -108,7 +108,7 @@ class _OfflineTripsState extends State<OfflineTrips> {
                                     ]
                                 ),
                                 child: ListTile(
-                                  title: Text('Field Trip '+(index+1).toString()),
+                                  title: Text((tripList[index].trip_start_location).toString() +' to '+ (tripList[index].trip_end_location).toString()),
                                   subtitle: Text(
                                       getDateAndTime(tripList[index].time)),
                                   //title: Text(tripList[index].start_meter_reading== null ? 'Null' : tripList[index].start_meter_reading),

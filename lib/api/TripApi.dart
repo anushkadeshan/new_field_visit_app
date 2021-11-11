@@ -67,7 +67,7 @@ class TripApi{
   {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var token = localStorage.getString('token');
-
+    //print(token);
     _setHeaders() => {
       'Content-type' : 'application/json',
       'Accept' : 'application/json',

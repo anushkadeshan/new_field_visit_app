@@ -51,6 +51,7 @@ dependencies:
   flutter_icons: ^1.1.0
   google_maps_flutter: ^1.2.0
   flutter_launcher_icons: ^0.8.1
+  flutter_svg: ^0.19.3
 
 dev_dependencies:
   flutter_test:

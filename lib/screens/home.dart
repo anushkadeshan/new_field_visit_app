@@ -517,11 +517,13 @@ class _HomeState extends State<Home> {
                    backgroundColor: Colors.red,
                    label: 'Start a Trip',
                    labelStyle: TextStyle(fontSize: 18.0),
-                   onTap: () =>
-                       Navigator.push(
+                   onTap: () async  =>
+                        Navigator.push(
                            context,
                            new MaterialPageRoute(
-                               builder: (context) => StartTrip())
+                               builder: (context) =>
+
+                                   StartTrip())
                        ),
                    onLongPress: () => print('FIRST CHILD LONG PRESS'),
                  ),

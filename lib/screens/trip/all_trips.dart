@@ -202,7 +202,7 @@ class _TripsState extends State<Trips> {
                                   ]
                               ),
                               child: ListTile(
-                                  title: Text((tripList[index].date).toString()),
+                                  title: Text((tripList[index].trip_start_location).toString()+ ' to '+(tripList[index].trip_end_location).toString() + ' on ' +(tripList[index].date).toString()),
                                   subtitle: RichText(
                                     text: TextSpan(
                                       text: (tripList[index].distance).toStringAsPrecision(2),

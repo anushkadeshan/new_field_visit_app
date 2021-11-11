@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geocoder/geocoder.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:new_field_visit_app/database/trip_table_helper.dart';
@@ -10,23 +11,16 @@ import 'package:new_field_visit_app/models/TripSQL.dart';
 import 'package:new_field_visit_app/screens/session/time_provider.dart';
 import 'package:new_field_visit_app/screens/trip/trip_success.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class TripRunning extends StatefulWidget {
-
-  String start_meter_reading;
-  String start_time;
-
-
-  TripRunning({String start_time,String start_meter_reading }){
-    this.start_meter_reading = start_meter_reading;
-    this.start_time = start_time;
-  }
   @override
   _TripRunningState createState() => _TripRunningState();
 }
 
 class _TripRunningState extends State<TripRunning> {
+
   final Location location = Location();
   var timer;
   bool _is_saving = false;
@@ -39,12 +33,18 @@ class _TripRunningState extends State<TripRunning> {
   StreamSubscription<LocationData> _locationSubscription;
   final _formKey = GlobalKey<FormState>();
   String end_meter_reading = '';
+  String trip_stop_location = '';
+  String start_time = '';
+  String start_meter_reading = '';
+  String trip_start_location = '';
+
 
   void initState() {
     // TODO: implement initState
     super.initState();
     _initiateSettings();
     _generateTripId();
+    setTripStatus();
 
     timer = Provider.of<TimerProvider>(context, listen: false);
     timer.startTimer();
@@ -52,16 +52,27 @@ class _TripRunningState extends State<TripRunning> {
   }
   _generateTripId() async {
     var uuid =  await Uuid();
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var trip_start_location1 = localStorage.getString('trip_start_location');
+    var start_meter_reading1 = localStorage.getString('start_meter_reading');
+    var start_time1 = localStorage.getString('start_time');
     // Generate a v1 (time-based) id
     setState(() {
+      start_time = start_time1;
+      start_meter_reading = start_meter_reading1;
+      trip_start_location = trip_start_location1;
       tripId = uuid.v1();
     });
   }
 
+  setTripStatus() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    localStorage.setBool('tripRunning', true);
+  }
   Future<void> _initiateSettings() async {
     final result = await location.changeSettings(
       accuracy: LocationAccuracy.high,
-      interval: 30000,
+      interval: 5000,
       distanceFilter: double.parse('0'),
     );
     print(result);
@@ -90,9 +101,10 @@ class _TripRunningState extends State<TripRunning> {
           });
           Trip trip = Trip(
             trip_id : tripId,
-            start_time: widget.start_time,
+            start_time: start_time,
             date :  DateFormat('yyyy-MM-dd').format(DateTime.now()),
-            start_meter_reading : widget.start_meter_reading,
+            start_meter_reading : start_meter_reading,
+            trip_start_location : trip_start_location,
             latitude : _location.latitude,
             longitude : _location.longitude,
             accuracy : _location.accuracy,
@@ -140,8 +152,8 @@ class _TripRunningState extends State<TripRunning> {
   //}
 
   Future<void> _stopListen() async {
-    _locationSubscription.cancel();
     setState(() {
+      _locationSubscription.cancel();
       _locationSubscription = null;
     });
   }
@@ -169,25 +181,22 @@ class _TripRunningState extends State<TripRunning> {
               child: ListView(
                 children: [
                   Container(
-                    decoration: BoxDecoration(
-                        color: Color(0xff4e54c8),
-                        border: Border.all(
-                          color: Colors.blueGrey[500],
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(10))
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Center(
-                      child: Text(
-                        'Hours : ${timer.hour} : ' + 'Minutes: ${timer.minute} : ' + 'Seconds : ${timer.seconds} ',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
+                      child: Center(
+                        child: SvgPicture.asset(
+                            'assets/images/scooter.svg',
+                            semanticsLabel: 'Trip Running',
+                          width: 150,
+                        )
                       ),
-                    ),
                   ),
-                  SizedBox(height: 60),
+                  SizedBox(height: 20),
+                  Center(
+                    child: SpinKitRipple(
+                      color: Colors.purple,
+                      size: 50.0,
+                    )
+                  ),
+                  SizedBox(height: 20),
                   Center(child: Text('Enter Current meter reading before end the Trip',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20, color: Colors.deepPurple),)),
@@ -221,7 +230,32 @@ class _TripRunningState extends State<TripRunning> {
                               //fillColor: Colors.green
                             ),
                           ),
-
+                          SizedBox(height: 20, width: 20,),
+                          TextFormField(
+                            autofocus: false,
+                            cursorColor: Colors.purpleAccent,
+                            keyboardType: TextInputType.text,
+                            style: TextStyle(color: Colors.purpleAccent),
+                            validator: (val) => val.isEmpty ? 'Enter Trip End Location' : null,
+                            onChanged: (val) {
+                              setState(() => trip_stop_location = val);
+                            },
+                            decoration: new InputDecoration(
+                              errorStyle: TextStyle(color: Colors.red[200]),
+                              prefixIcon: Icon(
+                                Icons.my_location,
+                                color: Colors.purpleAccent,
+                              ),
+                              labelText: "Trip End Location",
+                              fillColor: Colors.white,
+                              border: new OutlineInputBorder(
+                                borderRadius: new BorderRadius.circular(18.0),
+                                borderSide: new BorderSide(
+                                ),
+                              ),
+                              //fillColor: Colors.green
+                            ),
+                          ),
                         ],
                       )),
                 ],
@@ -246,7 +280,7 @@ class _TripRunningState extends State<TripRunning> {
                           color: Colors.white,fontSize: 20),),
                   ),
                 ),
-                onTap: () async{
+                onTap: () async {
                   if(_formKey.currentState.validate()){
                     FocusScope.of(context).requestFocus(FocusNode());
                     _is_saving ? null :
@@ -256,12 +290,14 @@ class _TripRunningState extends State<TripRunning> {
                   setState(() {
                      _stopListen();
                   });
-
+                  SharedPreferences localStorage = await SharedPreferences.getInstance();
+                  localStorage.setBool('tripRunning',false);
                   Navigator.push(
                   context,
                   new MaterialPageRoute(
                   builder: (context) => TripSuccess(
                       end_meter_reading:end_meter_reading,
+                      trip_stop_location:trip_stop_location,
                       trip_id: tripId,
                       end_time :DateFormat('hh:mm:ss').format(DateTime.now())
                   )

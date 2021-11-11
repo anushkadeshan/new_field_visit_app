@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geocoder/geocoder.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:new_field_visit_app/screens/trip/trip_running.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class StartTrip extends StatefulWidget {
 
@@ -32,19 +32,39 @@ class _StartTripState extends State<StartTrip> {
 
   final _formKey = GlobalKey<FormState>();
   String _start_meter_reading = '';
+  String _trip_start_location = '';
 
   void initState() {
     // TODO: implement initState
     is_loading=true;
     super.initState();
+    _checkTripStatus();
     _checkPermissions();
     _requestPermission();
     _checkService();
     _checkBackgroundMode();
     _getLocation();
+
     is_loading =false;
   }
 
+  _checkTripStatus() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var tripRunning = localStorage.getBool('tripRunning');
+    print(tripRunning);
+    if(tripRunning) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please End the current trip before start a new',textAlign: TextAlign.center,),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      Navigator.push(
+          context,
+          new MaterialPageRoute(
+              builder: (context) => TripRunning()));
+    }
+  }
 
   Future<void> _checkPermissions() async {
     final PermissionStatus permissionGrantedResult =
@@ -181,7 +201,8 @@ class _StartTripState extends State<StartTrip> {
                     cursorColor: Colors.purpleAccent,
                     keyboardType: TextInputType.number,
                     style: TextStyle(color: Colors.purpleAccent),
-                    validator: (val) => val.isEmpty ? 'Enter Start Meter Reading' : null,
+                    validator: (val) =>
+                      val.isEmpty ? 'Enter Start Meter Reading' : null,
                     onChanged: (val) {
                       setState(() => _start_meter_reading = val);
                     },
@@ -192,6 +213,32 @@ class _StartTripState extends State<StartTrip> {
                         color: Colors.purpleAccent,
                       ),
                       labelText: "Current Meter Reading",
+                      fillColor: Colors.white,
+                      border: new OutlineInputBorder(
+                        borderRadius: new BorderRadius.circular(18.0),
+                        borderSide: new BorderSide(
+                        ),
+                      ),
+                      //fillColor: Colors.green
+                    ),
+                  ),
+                  SizedBox(height: 20.0,),
+                  TextFormField(
+                    autofocus: true,
+                    cursorColor: Colors.purpleAccent,
+                    keyboardType: TextInputType.text,
+                    style: TextStyle(color: Colors.purpleAccent),
+                    validator: (val) => val.isEmpty ? 'Enter Trip Start Location' : null,
+                    onChanged: (val) {
+                      setState(() => _trip_start_location = val);
+                    },
+                    decoration: new InputDecoration(
+                      errorStyle: TextStyle(color: Colors.red[200]),
+                      prefixIcon: Icon(
+                        Icons.my_location,
+                        color: Colors.purpleAccent,
+                      ),
+                      labelText: "Trip Start Location",
                       fillColor: Colors.white,
                       border: new OutlineInputBorder(
                         borderRadius: new BorderRadius.circular(18.0),
@@ -219,18 +266,19 @@ class _StartTripState extends State<StartTrip> {
                           style: TextStyle(color: Colors.white, fontSize: 20),),
                       ),
                     ),
-                    onTap: (){
+                    onTap: () async {
                       if(_formKey.currentState.validate()){
                         FocusScope.of(context).requestFocus(FocusNode());
                         _is_saving ? null :
                         _is_saving = true;
+                        SharedPreferences localStorage = await SharedPreferences.getInstance();
+                        localStorage.setString('start_meter_reading', _start_meter_reading);
+                        localStorage.setString('trip_start_location', _trip_start_location);
+                        localStorage.setString('start_time', DateFormat('hh:mm:ss').format(DateTime.now()));
                         Navigator.push(
                           context,
                           new MaterialPageRoute(
-                              builder: (context) => TripRunning(
-                                  start_meter_reading:_start_meter_reading,
-                                  start_time : DateFormat('hh:mm:ss').format(DateTime.now()),
-                              )
+                              builder: (context) => TripRunning()
                           ),
                         );
                         _is_saving = false;

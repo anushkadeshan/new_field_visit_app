@@ -7,9 +7,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class TripDBHelper{
-  static final _databaseName = 'field_trips.db';
-  static final _databaseVersion = 4;
-  static final _table_trips = 'trips';
+  static final _databaseName = 'field_trips_new1.db';
+  static final _databaseVersion = 6;
+  static final _table_trips = 'tripsNewTable';
   static String path;
 
   TripDBHelper._privateConstructor();
@@ -37,7 +37,7 @@ class TripDBHelper{
   }
   ///////on create method for creating datanase with table name and column names
   FutureOr<void> _onCreate(Database db, int version) async{
-    await db.execute('CREATE TABLE $_table_trips(id INTEGER PRIMARY KEY autoincrement, start_meter_reading TEXT, trip_id TEXT, latitude DOUBLE, longitude DOUBLE, accuracy DOUBLE, altitude DOUBLE, speed DOUBLE, end_meter_reading TEXT, time DOUBLE, end_time TEXT, date TEXT, start_time TEXT)');
+    await db.execute('CREATE TABLE $_table_trips(id INTEGER PRIMARY KEY autoincrement, start_meter_reading TEXT, trip_start_location TEXT, trip_end_location TEXT, trip_id TEXT, latitude DOUBLE, longitude DOUBLE, accuracy DOUBLE, altitude DOUBLE, speed DOUBLE, end_meter_reading TEXT, time DOUBLE, end_time TEXT, date TEXT, start_time TEXT)');
   }
 
   //// Get Database file path
@@ -71,9 +71,9 @@ class TripDBHelper{
     return trip;
   }
 
-  Future<int> updateTrip2(end_meter_reading, trip_id, end_time) async {
+  Future<int> updateTrip2(end_meter_reading, trip_id, end_time, trip_stop_location) async {
     Database db = await instance.database;
-    final result =  await   db.rawUpdate('UPDATE trips SET end_meter_reading = ?, end_time = ?  WHERE trip_id = ?', [end_meter_reading,end_time,trip_id,]);
+    final result =  await   db.rawUpdate('UPDATE tripsNewTable SET end_meter_reading = ?, end_time = ? , trip_end_location = ?  WHERE trip_id = ? ', [end_meter_reading,end_time,trip_stop_location,trip_id,]);
     return result;
   }
 

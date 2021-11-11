@@ -8,11 +8,13 @@ import 'package:new_field_visit_app/screens/trip/offline_trips.dart';
 
 class TripSuccess extends StatefulWidget {
   String end_meter_reading;
+  String trip_stop_location;
   String trip_id;
   String end_time;
 
-  TripSuccess({String end_meter_reading, String trip_id, String end_time }){
+  TripSuccess({String end_meter_reading, String trip_stop_location, String trip_id, String end_time }){
     this.end_meter_reading = end_meter_reading;
+    this.trip_stop_location = trip_stop_location;
     this.trip_id = trip_id;
     this.end_time = end_time;
   }
@@ -38,7 +40,7 @@ class _TripSuccessState extends State<TripSuccess> {
 
   List<dynamic> data = [];
   updateTripTable() async{
-    await TripDBHelper.instance.updateTrip2(widget.end_meter_reading, widget.trip_id, widget.end_time).then((value) {
+    await TripDBHelper.instance.updateTrip2(widget.end_meter_reading, widget.trip_id, widget.end_time, widget.trip_stop_location).then((value) {
       if(value != null) {
         print('success');
         setState(() {

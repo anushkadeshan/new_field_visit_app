@@ -292,6 +292,8 @@ class _OfflineTripSingleState extends State<OfflineTripSingle> {
         'altitude': tripData[i].altitude,
         'speed': tripData[i].speed,
         'end_meter_reading': tripData[i].end_meter_reading,
+        'trip_end_location': tripData[i].trip_end_location,
+        'trip_start_location': tripData[i].trip_start_location,
         'time' : tripData[i].time,
         'end_time' : tripData[i].end_time,
         'start_time': tripData[i].start_time,
