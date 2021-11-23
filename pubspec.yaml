@@ -52,6 +52,8 @@ dependencies:
   google_maps_flutter: ^1.2.0
   flutter_launcher_icons: ^0.8.1
   flutter_svg: ^0.19.3
+  image_picker: ^0.6.7+22
+  slide_digital_clock: ^1.0.0
 
 dev_dependencies:
   flutter_test:

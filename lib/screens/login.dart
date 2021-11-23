@@ -133,7 +133,7 @@ class _LoginState extends State<Login> {
                                   controller: mailController,
                                   decoration: InputDecoration(
                                       border: InputBorder.none,
-                                      hintText: "Email Address",
+                                      hintText: "Your Email Address",
                                       hintStyle: TextStyle(color: Colors.grey[400])
                                   ),
                                 ),
@@ -146,7 +146,7 @@ class _LoginState extends State<Login> {
                                   obscureText: true,
                                   decoration: InputDecoration(
                                       border: InputBorder.none,
-                                      hintText: "Password",
+                                      hintText: "Your Password",
                                       hintStyle: TextStyle(color: Colors.grey[400])
                                   ),
                                 ),
@@ -170,7 +170,7 @@ class _LoginState extends State<Login> {
                             child: Center(
                               child: Text(
                                 _is_loading ? "Logging..." : 'Login' ,
-                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 16.0),),
                             ),
                           ),
                           onTap: (){

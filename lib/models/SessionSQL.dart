@@ -12,10 +12,11 @@ class Session{
   String start_time;
   String end_time;
   String purpose;
+  String image;
   String created_at;
   String updated_at;
 
-  Session({this.id, this.client, this.date, this.description, this.start_address, this.end_address, this.start_lat, this.end_lat, this.start_long, this.end_long, this.start_time, this.end_time, this.created_at, this.updated_at, this.purpose});
+  Session({this.id, this.client, this.date, this.description, this.start_address, this.end_address, this.start_lat, this.end_lat, this.start_long, this.end_long, this.start_time, this.end_time, this.created_at, this.updated_at, this.purpose, this.image});
   //////From Map - Query Map => Product Model
   static Session fromMap(Map<String, dynamic> query){
     Session session = Session();
@@ -34,6 +35,7 @@ class Session{
     session.created_at = query['created_at'];
     session.updated_at = query['updated_at'];
     session.purpose = query['purpose'];
+    session.image = query['image'];
     return session;
   }
 
@@ -55,6 +57,7 @@ class Session{
     'created_at' : session.created_at,
     'updated_at' : session.updated_at,
     'purpose' : session.purpose,
+      'image' : session.image
     };
   }
 

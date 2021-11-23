@@ -12,12 +12,13 @@ class Session {
   String start_time;
   String end_time;
   String purpose;
+  String image;
   String created_at;
   String updated_at;
   String user_id;
 
 
-  Session({this.id, this.client, this.date, this.description, this.start_address, this.end_address, this.start_lat, this.end_lat, this.start_long, this.end_long, this.start_time, this.end_time, this.created_at, this.updated_at, this.user_id, this.purpose});
+  Session({this.id, this.client, this.date, this.description, this.start_address, this.end_address, this.start_lat, this.end_lat, this.start_long, this.end_long, this.start_time, this.end_time, this.created_at, this.updated_at, this.user_id, this.purpose, this.image});
 
   Session.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -36,6 +37,7 @@ class Session {
     updated_at = json['updated_at'];
     user_id = json['user_id'];
     purpose = json['purpose'];
+    image = json['image'];
 
   }
 
@@ -57,6 +59,7 @@ class Session {
     data['updated_at'] = this.updated_at;
     data['user_id'] = this.user_id;
     data['purpose'] = this.purpose;
+    data['image'] = this.image;
 
     return data;
   }

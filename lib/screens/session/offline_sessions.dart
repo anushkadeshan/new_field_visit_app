@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:badges/badges.dart';
 import 'package:connectivity/connectivity.dart';
@@ -27,6 +28,7 @@ class _OfflineSessionsState extends State<OfflineSessions> {
   String end_address = '';
   int _sessionCount= 0;
   Session selectedSession;
+  File uploadImage;
 
   @override
   void initState() {
@@ -129,6 +131,14 @@ class _OfflineSessionsState extends State<OfflineSessions> {
                                     ),
                                   ),
                                   onTap: () {
+                                    uploadImage = File(SessionList[index].image);
+                                    List<int> imageBytes = uploadImage.readAsBytesSync();
+
+                                    final bytes = uploadImage.readAsBytesSync().lengthInBytes;
+                                    final kb = bytes / 1024;
+                                    final mb = kb / 1024;
+                                    print(mb);
+                                    String baseimage = base64Encode(imageBytes);
                                     var data = {
                                       'id' : SessionList[index].id,
                                       'start_address': SessionList[index]
@@ -154,7 +164,8 @@ class _OfflineSessionsState extends State<OfflineSessions> {
                                       'end_address': SessionList[index]
                                           .end_address,
                                       'end_time': SessionList[index]
-                                          .end_time
+                                          .end_time,
+                                      'image' : baseimage
                                     };
                                     Navigator.push(
                                       context,

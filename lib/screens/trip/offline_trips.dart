@@ -70,8 +70,9 @@ class _OfflineTripsState extends State<OfflineTrips> {
                             setState(() {
                               _sessionCount = tripList.length;
                             });
+
                           });
-                          if (tripList.isEmpty) {
+                          if (tripList.length ==0) {
                             return GestureDetector(
                               child: Container(
                                 margin: EdgeInsets.symmetric(
@@ -92,6 +93,7 @@ class _OfflineTripsState extends State<OfflineTrips> {
                             );
                           }
                           else {
+                            print(tripList.length);
                             return GestureDetector(
                               child: Container(
                                 margin: EdgeInsets.symmetric(

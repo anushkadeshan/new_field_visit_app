@@ -96,7 +96,22 @@ class _SessionStartState extends State<SessionStart> {
   final _formKey = GlobalKey<FormState>();
   String date = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
   String start_time = DateFormat('hh:mm:ss').format(DateTime.now());
-  final List<String> _purposes = ['Lively Hood', 'Scholarship Youth', 'EIP Client', 'Base Line', 'Other'];
+  final List<String> _purposes = [
+    'Advocacy Campaigns',
+    'Baseline/Evaluation',
+    'BMIC Branch Visits',
+    'BSS Scholarships',
+    'Community Development Projects',
+    'Education Project Activities',
+    'EIP Client Visits',
+    'Livelihood',
+    'Meetup Stakeholders',
+    'Monitoring Visits to Beneficiary/Project',
+    'Other',
+    'Visit CBOs/CSOs Meeting',
+    'Workshops or Training Programs for Youth',
+
+  ];
   String _description;
   String _purpose ;
   String _client;
@@ -124,6 +139,7 @@ class _SessionStartState extends State<SessionStart> {
 
                     SizedBox(height: 20.0),
                     DropdownButtonFormField(
+                      isExpanded: true,
                       autofocus: true,
                       style: TextStyle(color: Colors.purpleAccent, fontSize: 15.0),
                       decoration: new InputDecoration(

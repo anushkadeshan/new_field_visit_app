@@ -59,7 +59,9 @@ class SessionApi{
         body: jsonEncode(data),
         headers: _setHeaders()
     );
+    print(response.body);
     var body = json.decode(response.body);
+    print(body);
     return response;
   }
   //get this week session count

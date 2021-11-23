@@ -15,6 +15,7 @@ import 'package:new_field_visit_app/api/TripApi.dart';
 import 'package:new_field_visit_app/api/callApi.dart';
 import 'package:new_field_visit_app/auth_provider/authProvider.dart';
 import 'package:new_field_visit_app/database/session_table_helper.dart';
+import 'package:new_field_visit_app/database/trip_table_helper.dart';
 import 'package:new_field_visit_app/screens/login.dart';
 import 'package:new_field_visit_app/screens/session/all-sessions.dart';
 import 'package:new_field_visit_app/screens/session/offline_sessions.dart';
@@ -35,6 +36,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int _sessionCount = 0;
+  int _tripCount = 0;
   bool _loading = true;
   String _connectionStatus = 'Unknown';
   String greeting_message = '';
@@ -75,6 +77,14 @@ class _HomeState extends State<Home> {
     await SessionDBHelper.instance.getOfflineSessionCount().then((value) {
       setState(() {
         _sessionCount = value;
+      });
+    });
+  }
+
+  getOfflineTripCount() async {
+    await TripDBHelper.instance.getOfflineTripCount().then((value) {
+      setState(() {
+        _tripCount = value;
       });
     });
   }
@@ -204,6 +214,140 @@ class _HomeState extends State<Home> {
                                children: [
                                  Wrap(
                                    children: [
+
+                                     Container(
+                                       margin: EdgeInsets.symmetric(
+                                           vertical: 5, horizontal: 8),
+                                       child: Text('Trips',style: TextStyle(color: Colors.white),),
+                                     ),
+                                     Container(
+                                       margin: EdgeInsets.symmetric(
+                                           vertical: 5, horizontal: 8),
+
+                                       decoration: BoxDecoration(
+                                         borderRadius: BorderRadius.circular(
+                                             12),
+                                         boxShadow: [
+                                           BoxShadow(
+                                             color: Colors.white.withOpacity(
+                                                 0.2),
+                                             spreadRadius: 4,
+                                             blurRadius: 5,
+                                             offset: Offset(0,
+                                                 4), // changes position of shadow
+                                           ),
+                                         ],
+                                         color: Colors.white,
+                                       ),
+                                       child: ListTile(
+                                         title: Text('New Trip'),
+                                         leading: Icon(Icons.location_on,color: Colors.blue,),
+                                         onTap: () {
+                                           Navigator.push(
+                                               context,
+                                               new MaterialPageRoute(
+                                                   builder: (context) =>
+                                                       StartTrip())
+                                           );
+                                         },
+                                       ),
+
+                                     ),
+                                     Container(
+                                       margin: EdgeInsets.symmetric(
+                                           vertical: 5, horizontal: 8),
+                                       decoration: BoxDecoration(
+                                         borderRadius: BorderRadius.circular(
+                                             12),
+                                         boxShadow: [
+                                           BoxShadow(
+                                             color: Colors.white.withOpacity(
+                                                 0.2),
+                                             spreadRadius: 4,
+                                             blurRadius: 5,
+                                             offset: Offset(0,
+                                                 4), // changes position of shadow
+                                           ),
+                                         ],
+                                         color: Colors.white,
+                                       ),
+                                       child: ListTile(
+                                         title: Text('My Offline Trips'),
+                                         leading: Icon(Icons.location_off,color: Colors.yellow,),
+                                         trailing: DecoratedBox(
+                                           decoration: BoxDecoration(
+                                               borderRadius: BorderRadius
+                                                   .circular(10),
+                                               color: _tripCount > 0 ? Colors
+                                                   .red : Colors.white),
+
+                                           child: Container(
+                                               padding: EdgeInsets.symmetric(
+                                                   vertical: 5, horizontal: 5),
+                                               child: Text('$_tripCount',
+                                                 style: TextStyle(
+                                                     color: Colors.white),)
+                                           ),
+                                         ),
+                                         onTap: () {
+                                           Navigator.push(
+                                               context,
+                                               new MaterialPageRoute(
+                                                   builder: (context) =>
+                                                       OfflineTrips())
+                                           );
+                                         },
+                                       ),
+
+                                     ),
+                                     Container(
+                                       margin: EdgeInsets.symmetric(
+                                           vertical: 5, horizontal: 8),
+                                       decoration: BoxDecoration(
+                                         borderRadius: BorderRadius.circular(
+                                             12),
+                                         boxShadow: [
+                                           BoxShadow(
+                                             color: Colors.white.withOpacity(
+                                                 0.2),
+                                             spreadRadius: 4,
+                                             blurRadius: 5,
+                                             offset: Offset(0,
+                                                 4), // changes position of shadow
+                                           ),
+                                         ],
+                                         color: Colors.white,
+                                       ),
+                                       child: ListTile(
+                                         title: Text('My Cloud Trips'),
+                                         leading: Icon(Icons.location_on,color: Colors.green,),
+                                         trailing: DecoratedBox(
+                                           decoration: BoxDecoration(
+                                               borderRadius: BorderRadius
+                                                   .circular(10),
+                                               color: tripData == null ? Colors
+                                                   .white : Colors.green),
+
+                                           child: Container(
+                                               padding: EdgeInsets.symmetric(
+                                                   vertical: 5, horizontal: 5),
+                                               child: Text(tripData == null ? '0'
+                                                 : tripData['tripTotal'].toString(),
+                                                 style: TextStyle(
+                                                     color: Colors.white),)
+                                           ),
+                                         ),
+                                         onTap: () {
+                                           Navigator.push(
+                                               context,
+                                               new MaterialPageRoute(
+                                                   builder: (context) =>
+                                                       Trips())
+                                           );
+                                         },
+                                       ),
+
+                                     ),
                                      Container(
                                        margin: EdgeInsets.symmetric(
                                            vertical: 5, horizontal: 8),
@@ -265,7 +409,7 @@ class _HomeState extends State<Home> {
                                        child: ListTile(
                                          title: Text('My Offline Sessions'),
                                          leading: Icon(
-                                             Icons.signal_cellular_off,color: Colors.yellow,),
+                                           Icons.signal_cellular_off,color: Colors.yellow,),
 
                                          trailing: DecoratedBox(
                                            decoration: BoxDecoration(
@@ -315,18 +459,21 @@ class _HomeState extends State<Home> {
                                        child: ListTile(
                                          title: Text('My Cloud Sessions'),
                                          leading: Icon(
-                                             Icons.signal_cellular_4_bar_outlined,color: Colors.green,),
+                                           Icons.signal_cellular_4_bar_outlined,color: Colors.green,),
                                          trailing: DecoratedBox(
                                            decoration: BoxDecoration(
                                                borderRadius: BorderRadius
                                                    .circular(10),
-                                               color: _sessionCount > 0 ? Colors
-                                                   .red : Colors.white),
+                                               color: sessionData == null ? Colors
+                                                   .white : Colors.green),
 
                                            child: Container(
                                                padding: EdgeInsets.symmetric(
                                                    vertical: 5, horizontal: 5),
-                                               child: Text('$_sessionCount',
+                                               child: Text(sessionData == null
+                                                   ? '0'
+                                                   : sessionData['SessionsTotal']
+                                                   .toString(),
                                                  style: TextStyle(
                                                      color: Colors.white),)
                                            ),
@@ -343,108 +490,6 @@ class _HomeState extends State<Home> {
 
                                      ),
                                      Divider(color: Colors.white,),
-                                     Container(
-                                       margin: EdgeInsets.symmetric(
-                                           vertical: 5, horizontal: 8),
-                                       child: Text('Trips',style: TextStyle(color: Colors.white),),
-                                     ),
-                                     Container(
-                                       margin: EdgeInsets.symmetric(
-                                           vertical: 5, horizontal: 8),
-
-                                       decoration: BoxDecoration(
-                                         borderRadius: BorderRadius.circular(
-                                             12),
-                                         boxShadow: [
-                                           BoxShadow(
-                                             color: Colors.white.withOpacity(
-                                                 0.2),
-                                             spreadRadius: 4,
-                                             blurRadius: 5,
-                                             offset: Offset(0,
-                                                 4), // changes position of shadow
-                                           ),
-                                         ],
-                                         color: Colors.white,
-                                       ),
-                                       child: ListTile(
-                                         title: Text('New Trip'),
-                                         leading: Icon(Icons.location_on,color: Colors.blue,),
-                                         onTap: () {
-                                           Navigator.push(
-                                               context,
-                                               new MaterialPageRoute(
-                                                   builder: (context) =>
-                                                       StartTrip())
-                                           );
-                                         },
-                                       ),
-
-                                     ),
-                                     Container(
-                                       margin: EdgeInsets.symmetric(
-                                           vertical: 5, horizontal: 8),
-                                       decoration: BoxDecoration(
-                                         borderRadius: BorderRadius.circular(
-                                             12),
-                                         boxShadow: [
-                                           BoxShadow(
-                                             color: Colors.white.withOpacity(
-                                                 0.2),
-                                             spreadRadius: 4,
-                                             blurRadius: 5,
-                                             offset: Offset(0,
-                                                 4), // changes position of shadow
-                                           ),
-                                         ],
-                                         color: Colors.white,
-                                       ),
-                                       child: ListTile(
-                                         title: Text('My Offline Trips'),
-                                         leading: Icon(Icons.location_off,color: Colors.yellow,),
-                                         onTap: () {
-                                           Navigator.push(
-                                               context,
-                                               new MaterialPageRoute(
-                                                   builder: (context) =>
-                                                       OfflineTrips())
-                                           );
-                                         },
-                                       ),
-
-                                     ),
-                                     Container(
-                                       margin: EdgeInsets.symmetric(
-                                           vertical: 5, horizontal: 8),
-                                       decoration: BoxDecoration(
-                                         borderRadius: BorderRadius.circular(
-                                             12),
-                                         boxShadow: [
-                                           BoxShadow(
-                                             color: Colors.white.withOpacity(
-                                                 0.2),
-                                             spreadRadius: 4,
-                                             blurRadius: 5,
-                                             offset: Offset(0,
-                                                 4), // changes position of shadow
-                                           ),
-                                         ],
-                                         color: Colors.white,
-                                       ),
-                                       child: ListTile(
-                                         title: Text('My Cloud Trips'),
-                                         leading: Icon(Icons.location_on,color: Colors.green,),
-                                         onTap: () {
-                                           Navigator.push(
-                                               context,
-                                               new MaterialPageRoute(
-                                                   builder: (context) =>
-                                                       Trips())
-                                           );
-                                         },
-                                       ),
-
-                                     ),
                                      Divider(
                                        color: Colors.white,
                                      ),
@@ -659,7 +704,7 @@ class _HomeState extends State<Home> {
                                                        padding: EdgeInsets.only(
                                                            left: 10, top: 0),
                                                        child: Text(
-                                                           'Trips gone ',
+                                                           'Trips     ',
                                                            style: TextStyle(
                                                                color: Colors
                                                                    .black54,

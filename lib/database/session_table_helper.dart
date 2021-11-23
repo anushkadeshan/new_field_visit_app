@@ -7,9 +7,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SessionDBHelper{
-  static final _databaseName = 'mydb.db';
-  static final _databaseVersion = 1;
-  static final _table_sessions = 'sessions';
+  static final _databaseName = 'sessions.db';
+  static final _databaseVersion = 2;
+  static final _table_sessions = 'sessions_table';
   static String path;
 
   SessionDBHelper._privateConstructor();
@@ -38,7 +38,7 @@ class SessionDBHelper{
 
   ///////on create method for creating datanase with table name and column names
   FutureOr<void> _onCreate(Database db, int version) async{
-    await db.execute('CREATE TABLE $_table_sessions(id INTEGER PRIMARY KEY autoincrement, client TEXT, date TEXT, start_address TEXT, description TEXT, end_address TEXT, start_lat DOUBLE, end_lat DOUBLE, start_long DOUBLE, end_long DOUBLE, start_time TEXT,end_time TEXT,purpose TEXT,created_at TEXT,updated_at TEXT)');
+    await db.execute('CREATE TABLE $_table_sessions(id INTEGER PRIMARY KEY autoincrement, client TEXT, date TEXT, start_address TEXT, description TEXT, end_address TEXT, start_lat DOUBLE, end_lat DOUBLE, start_long DOUBLE, end_long DOUBLE, start_time TEXT,end_time TEXT,purpose TEXT, image TEXT,created_at TEXT,updated_at TEXT)');
   }
 
   //// Get Datanase file path
@@ -74,7 +74,7 @@ class SessionDBHelper{
 
   Future getOfflineSessionCount() async {
     Database db = await instance.database;
-    List<Map> list = await db.rawQuery('SELECT * FROM sessions');
+    List<Map> list = await db.rawQuery('SELECT * FROM sessions_table');
     int count = list.length;
     return count;
   }

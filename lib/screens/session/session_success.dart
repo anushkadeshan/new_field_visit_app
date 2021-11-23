@@ -15,9 +15,11 @@ import 'package:new_field_visit_app/screens/session/offline_sessions.dart';
 
 class SessionSuccess extends StatefulWidget {
   Map data;
+  String imagePath;
 
-  SessionSuccess({Map data }){
+  SessionSuccess({Map data, String imagePath }){
     this.data = data;
+    this.imagePath = imagePath;
   }
   @override
 
@@ -226,9 +228,11 @@ class _SessionSuccessState extends State<SessionSuccess> {
       created_at : widget.data['created_at'],
       updated_at : widget.data['updated_at'],
       purpose : widget.data['purpose'],
+      image : widget.imagePath
     );
 
     await SessionDBHelper.instance.insertSession(session).then((value) {
+      print(value);
       if(value!= null){
         setState(() {
           displayMessage = 'Your Session data has been successfully saved to your phone';

@@ -164,6 +164,7 @@ class _TripsState extends State<Trips> {
                         setState(() {
                           _count += (index/5);
                         });
+
                       });
                       if (tripList.isEmpty) {
                       return GestureDetector(
