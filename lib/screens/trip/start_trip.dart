@@ -23,6 +23,7 @@ class _StartTripState extends State<StartTrip> {
   String _error;
   bool is_loading = false;
   bool _is_saving = false;
+  bool _other_field = false;
 
   LocationData _location;
 
@@ -33,6 +34,12 @@ class _StartTripState extends State<StartTrip> {
   final _formKey = GlobalKey<FormState>();
   String _start_meter_reading = '';
   String _trip_start_location = '';
+
+  final List<String> _locations = [
+    'Office',
+    'Home',
+    'Other',
+  ];
 
   void initState() {
     // TODO: implement initState
@@ -223,19 +230,13 @@ class _StartTripState extends State<StartTrip> {
                     ),
                   ),
                   SizedBox(height: 20.0,),
-                  TextFormField(
-                    autofocus: true,
-                    cursorColor: Colors.purpleAccent,
-                    keyboardType: TextInputType.text,
-                    style: TextStyle(color: Colors.purpleAccent),
-                    validator: (val) => val.isEmpty ? 'Enter Trip Start Location' : null,
-                    onChanged: (val) {
-                      setState(() => _trip_start_location = val);
-                    },
+                  DropdownButtonFormField(
+                    isExpanded: true,
+                    style: TextStyle(color: Colors.purpleAccent, fontSize: 15.0),
                     decoration: new InputDecoration(
                       errorStyle: TextStyle(color: Colors.red[200]),
                       prefixIcon: Icon(
-                        Icons.my_location,
+                        Icons.directions_car,
                         color: Colors.purpleAccent,
                       ),
                       labelText: "Trip Start Location",
@@ -247,7 +248,50 @@ class _StartTripState extends State<StartTrip> {
                       ),
                       //fillColor: Colors.green
                     ),
+                    items: _locations.map((String myPurpose) {
+                      return DropdownMenuItem(
+                        value: myPurpose,
+                        child: Text('$myPurpose'),
+                      );
+                    }).toList(),
+                    validator: (val) => val ==null ? 'Select Trip Start Location' : null,
+                    onChanged: (val) {
+                      if(val=='Other'){
+                        setState(() => _other_field = true);
+                      }
+                      else{
+                        _other_field = false;
+                        setState(() => _trip_start_location = val);
+                      }
+                    },
                   ),
+                  SizedBox(height: 20.0),
+                  _other_field == true ?
+                  TextFormField(
+                    autofocus: true,
+                    cursorColor: Colors.purpleAccent,
+                    keyboardType: TextInputType.text,
+                    style: TextStyle(color: Colors.purpleAccent),
+                    validator: (val) => val.isEmpty ? 'This field is required' : null,
+                    onChanged: (val) {
+                      setState(() => _trip_start_location = val);
+                    },
+                    decoration: new InputDecoration(
+                      errorStyle: TextStyle(color: Colors.red[200]),
+                      prefixIcon: Icon(
+                        Icons.directions_car,
+                        color: Colors.purpleAccent,
+                      ),
+                      labelText: "Specify Location",
+                      fillColor: Colors.white,
+                      border: new OutlineInputBorder(
+                        borderRadius: new BorderRadius.circular(18.0),
+                        borderSide: new BorderSide(
+                        ),
+                      ),
+                      //fillColor: Colors.green
+                    ),
+                  ) : SizedBox(height: 1.0),
                   SizedBox(height: 20,),
                   InkWell(
                     child: Container(
@@ -295,7 +339,6 @@ class _StartTripState extends State<StartTrip> {
     else{
       return Container(
         color: Colors.white,
-
         child: Align(
           alignment: Alignment.center,
           child: SpinKitFadingCube(

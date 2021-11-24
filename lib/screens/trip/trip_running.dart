@@ -28,6 +28,8 @@ class _TripRunningState extends State<TripRunning> {
   String _error = '';
   String tripId;
 
+  bool _other_field = false;
+
   LocationData _location;
 
   StreamSubscription<LocationData> _locationSubscription;
@@ -38,6 +40,11 @@ class _TripRunningState extends State<TripRunning> {
   String start_meter_reading = '';
   String trip_start_location = '';
 
+  final List<String> _locations = [
+    'Office',
+    'Home',
+    'Other',
+  ];
 
   void initState() {
     // TODO: implement initState
@@ -160,11 +167,12 @@ class _TripRunningState extends State<TripRunning> {
 
   @override
   void dispose() {
+    super.dispose();
     _locationSubscription.cancel();
     setState(() {
       _locationSubscription = null;
     });
-    super.dispose();
+
   }
   @override
   Widget build(BuildContext context) {
@@ -177,7 +185,7 @@ class _TripRunningState extends State<TripRunning> {
               backgroundColor: Color(0xff4e54c8),
             ),
             body: Container(
-              padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
+              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
               child: ListView(
                 children: [
                   Container(
@@ -231,19 +239,13 @@ class _TripRunningState extends State<TripRunning> {
                             ),
                           ),
                           SizedBox(height: 20, width: 20,),
-                          TextFormField(
-                            autofocus: false,
-                            cursorColor: Colors.purpleAccent,
-                            keyboardType: TextInputType.text,
-                            style: TextStyle(color: Colors.purpleAccent),
-                            validator: (val) => val.isEmpty ? 'Enter Trip End Location' : null,
-                            onChanged: (val) {
-                              setState(() => trip_stop_location = val);
-                            },
+                          DropdownButtonFormField(
+                            isExpanded: true,
+                            style: TextStyle(color: Colors.purpleAccent, fontSize: 15.0),
                             decoration: new InputDecoration(
                               errorStyle: TextStyle(color: Colors.red[200]),
                               prefixIcon: Icon(
-                                Icons.my_location,
+                                Icons.directions_car,
                                 color: Colors.purpleAccent,
                               ),
                               labelText: "Trip End Location",
@@ -255,57 +257,99 @@ class _TripRunningState extends State<TripRunning> {
                               ),
                               //fillColor: Colors.green
                             ),
+                            items: _locations.map((String myPurpose) {
+                              return DropdownMenuItem(
+                                value: myPurpose,
+                                child: Text('$myPurpose'),
+                              );
+                            }).toList(),
+                            validator: (val) => val ==null ? 'Select Trip End Location' : null,
+                            onChanged: (val) {
+                              if(val=='Other'){
+                                setState(() => _other_field = true);
+                              }
+                              else{
+                                _other_field = false;
+                                setState(() => trip_stop_location = val);
+                              }
+                            },
+                          ),
+                          SizedBox(height: 20.0,width: 20,),
+                          _other_field == true ?
+                          TextFormField(
+                            autofocus: true,
+                            cursorColor: Colors.purpleAccent,
+                            keyboardType: TextInputType.text,
+                            style: TextStyle(color: Colors.purpleAccent),
+                            validator: (val) => val.isEmpty ? 'This field is required' : null,
+                            onChanged: (val) {
+                              setState(() => trip_stop_location = val);
+                            },
+                            decoration: new InputDecoration(
+                              errorStyle: TextStyle(color: Colors.red[200]),
+                              prefixIcon: Icon(
+                                Icons.directions_car,
+                                color: Colors.purpleAccent,
+                              ),
+                              labelText: "Specify Location",
+                              fillColor: Colors.white,
+                              border: new OutlineInputBorder(
+                                borderRadius: new BorderRadius.circular(18.0),
+                                borderSide: new BorderSide(
+                                ),
+                              ),
+                              //fillColor: Colors.green
+                            ),
+                          ) : SizedBox(height: 1.0),
+                          SizedBox(height: 20,width: 20,),
+                          InkWell(
+                            child: Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      colors: [
+                                        Color(0xff4e54c8),
+                                        Color.fromRGBO(143, 148, 251, 1),
+                                      ]
+                                  )
+                              ),
+                              child: Center(
+                                child: Text(
+                                  _is_saving ? "Please wait..." : 'End the Trip',
+                                  style: TextStyle(
+                                      color: Colors.white,fontSize: 20),),
+                              ),
+                            ),
+                            onTap: () async {
+                              if(_formKey.currentState.validate()){
+                                FocusScope.of(context).requestFocus(FocusNode());
+                                _is_saving ? null :
+                                _is_saving = true;
+
+                                _is_saving = true;
+                                setState(() {
+                                  _stopListen();
+                                });
+                                SharedPreferences localStorage = await SharedPreferences.getInstance();
+                                localStorage.setBool('tripRunning',false);
+                                Navigator.push(
+                                  context,
+                                  new MaterialPageRoute(
+                                      builder: (context) => TripSuccess(
+                                          end_meter_reading:end_meter_reading,
+                                          trip_stop_location:trip_stop_location,
+                                          trip_id: tripId,
+                                          end_time :DateFormat('hh:mm:ss').format(DateTime.now())
+                                      )
+                                  ),
+                                );
+                                _is_saving = false;
+                              }
+                            },
                           ),
                         ],
                       )),
                 ],
-              ),
-            ),
-            bottomNavigationBar: BottomAppBar(
-              child: InkWell(
-                child: Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [
-                            Color(0xff4e54c8),
-                            Color.fromRGBO(143, 148, 251, 1),
-                          ]
-                      )
-                  ),
-                  child: Center(
-                    child: Text(
-                      _is_saving ? "Please wait..." : 'End the Trip',
-                      style: TextStyle(
-                          color: Colors.white,fontSize: 20),),
-                  ),
-                ),
-                onTap: () async {
-                  if(_formKey.currentState.validate()){
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    _is_saving ? null :
-                    _is_saving = true;
-
-                  _is_saving = true;
-                  setState(() {
-                     _stopListen();
-                  });
-                  SharedPreferences localStorage = await SharedPreferences.getInstance();
-                  localStorage.setBool('tripRunning',false);
-                  Navigator.push(
-                  context,
-                  new MaterialPageRoute(
-                  builder: (context) => TripSuccess(
-                      end_meter_reading:end_meter_reading,
-                      trip_stop_location:trip_stop_location,
-                      trip_id: tripId,
-                      end_time :DateFormat('hh:mm:ss').format(DateTime.now())
-                  )
-                  ),
-                  );
-                  _is_saving = false;
-                  }
-                },
               ),
             ),
           );

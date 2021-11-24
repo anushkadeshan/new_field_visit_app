@@ -17,7 +17,6 @@ class _OfflineTripsState extends State<OfflineTrips> {
   bool _loading = false;
   int _sessionCount= 0;
 
-  @override
   void initState() {
     // TODO: implement initState
     setState(() {
@@ -94,6 +93,7 @@ class _OfflineTripsState extends State<OfflineTrips> {
                           }
                           else {
                             print(tripList.length);
+                            print(tripList[index].trip_start_location);
                             return GestureDetector(
                               child: Container(
                                 margin: EdgeInsets.symmetric(

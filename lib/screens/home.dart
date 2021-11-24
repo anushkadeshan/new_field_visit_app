@@ -20,6 +20,7 @@ import 'package:new_field_visit_app/screens/login.dart';
 import 'package:new_field_visit_app/screens/session/all-sessions.dart';
 import 'package:new_field_visit_app/screens/session/offline_sessions.dart';
 import 'package:new_field_visit_app/screens/session/start_session.dart';
+import 'package:new_field_visit_app/screens/settings.dart';
 import 'package:new_field_visit_app/screens/spalash.dart';
 import 'package:new_field_visit_app/screens/trip/all_trips.dart';
 import 'package:new_field_visit_app/screens/trip/offline_trips.dart';
@@ -58,6 +59,7 @@ class _HomeState extends State<Home> {
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     _verifyUser ();
     getOfflineSessionCount();
+    getOfflineTripCount();
     greeting();
   }
   greeting() async {
@@ -129,8 +131,18 @@ class _HomeState extends State<Home> {
                backgroundColor: Color(0xff4e54c8),
                shadowColor: Colors.transparent,
                centerTitle: true,
-               title: Text('Field Visits')
-               ,
+               title: Text('Field Visits'),
+               actions: [
+                 IconButton(
+                   icon: Icon(Icons.settings,color: Colors.white),
+                   color: Colors.white,
+                   onPressed: () {
+                     Navigator.of(context).push(
+                         MaterialPageRoute(
+                             builder: (context) => Settings()));
+                   },
+                 )
+               ],
              ),
              drawer: Container(
                width: MediaQuery
@@ -155,6 +167,7 @@ class _HomeState extends State<Home> {
                        );
                      } else {
                        return Container(
+
                          decoration: BoxDecoration(
                            // Box decoration takes a gradient
                            gradient: LinearGradient(
@@ -178,7 +191,7 @@ class _HomeState extends State<Home> {
                                  children: [
                                    CircleAvatar(
                                      backgroundColor: Colors.white,
-                                     backgroundImage: auth.offline
+                                     backgroundImage: auth.user.profilePhotoUrl ==null
                                          ? AssetImage('assets/images/user.png')
                                          : NetworkImage(
                                          auth.user.profilePhotoUrl),

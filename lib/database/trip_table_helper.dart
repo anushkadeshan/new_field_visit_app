@@ -85,8 +85,9 @@ class TripDBHelper{
 
   Future getOfflineTripCount() async {
     Database db = await instance.database;
-    List<Map> list = await db.rawQuery('SELECT * FROM trips');
+    List<Map> list = await db.rawQuery('SELECT * FROM tripsNewTable GROUP BY trip_id');
     int count = list.length;
+    print(count);
     return count;
   }
 

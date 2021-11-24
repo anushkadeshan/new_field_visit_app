@@ -54,6 +54,7 @@ dependencies:
   flutter_svg: ^0.19.3
   image_picker: ^0.6.7+22
   slide_digital_clock: ^1.0.0
+  settings_ui: ^0.6.0
 
 dev_dependencies:
   flutter_test:
