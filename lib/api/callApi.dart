@@ -108,4 +108,24 @@ class CallApi extends ChangeNotifier{
     return response;
   }
 
+  addBoarding(data, apiUrl) async {
+    var fullUrl = _url + apiUrl + await _getToken();
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var token = localStorage.getString('token');
+
+    _setHeaders() => {
+      'Content-type' : 'application/json',
+      'Accept' : 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    var response =  await http.post(
+        fullUrl,
+        body: jsonEncode(data),
+        headers: _setHeaders()
+    );
+    var body = json.decode(response.body);
+    notifyListeners();
+    return response;
+  }
+
 }
