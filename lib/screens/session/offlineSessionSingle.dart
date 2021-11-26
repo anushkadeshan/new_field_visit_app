@@ -35,6 +35,7 @@ class _OfflineSessionSingleState extends State<OfflineSessionSingle> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _description =  widget.data['description'];
     initConnectivity();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);

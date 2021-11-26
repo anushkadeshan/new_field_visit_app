@@ -119,12 +119,10 @@ class _OfflineTripsState extends State<OfflineTrips> {
                                     icon: Icon(Feather.arrow_right_circle),
                                     onPressed: () =>
                                     {
-                                      Navigator.push(
-                                          context,
-                                          new MaterialPageRoute(
-                                              builder: (context) =>
-                                                  OfflineTripSingle(tripId :tripList[index].trip_id))
-                                      )
+                                    Navigator.pushAndRemoveUntil(context,
+                                      MaterialPageRoute(builder: (context) => OfflineTripSingle(tripId :tripList[index].trip_id)),
+                                      (Route<dynamic> route) => false,
+                                    )
                                     }
                                   ),
                                 ),

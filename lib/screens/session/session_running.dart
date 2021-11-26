@@ -260,9 +260,8 @@ class _SessionRunningState extends State<SessionRunning> {
                 onTap: () async{
                   if(uploadimage != null) {
                     _is_saving = true;
-                    List<int> imageBytes = uploadimage.readAsBytesSync();
-                    String baseimage = base64Encode(imageBytes);
-
+                    String baseimage = base64Encode(uploadimage.readAsBytesSync());
+                    String fileName = uploadimage.path.split("/").last;
                     await _checkLocationPermission();
                     if (serviceEnabled) {
                       String end_time = DateFormat('hh:mm:ss').format(
@@ -280,7 +279,8 @@ class _SessionRunningState extends State<SessionRunning> {
                         'end_long': end_long,
                         'end_address': end_address,
                         'end_time': end_time,
-                        'image' : baseimage
+                        'image' : baseimage,
+                        'fileName' : fileName,
                       };
 
                       Navigator.push(

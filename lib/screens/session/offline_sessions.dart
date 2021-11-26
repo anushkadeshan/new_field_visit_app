@@ -132,13 +132,9 @@ class _OfflineSessionsState extends State<OfflineSessions> {
                                   ),
                                   onTap: () {
                                     uploadImage = File(SessionList[index].image);
-                                    List<int> imageBytes = uploadImage.readAsBytesSync();
+                                    String baseimage = base64Encode(uploadImage.readAsBytesSync());
+                                    String fileName = uploadImage.path.split("/").last;
 
-                                    final bytes = uploadImage.readAsBytesSync().lengthInBytes;
-                                    final kb = bytes / 1024;
-                                    final mb = kb / 1024;
-                                    print(mb);
-                                    String baseimage = base64Encode(imageBytes);
                                     var data = {
                                       'id' : SessionList[index].id,
                                       'start_address': SessionList[index]
@@ -165,7 +161,8 @@ class _OfflineSessionsState extends State<OfflineSessions> {
                                           .end_address,
                                       'end_time': SessionList[index]
                                           .end_time,
-                                      'image' : baseimage
+                                      'image' : baseimage,
+                                      'fileName' : fileName,
                                     };
                                     Navigator.push(
                                       context,
